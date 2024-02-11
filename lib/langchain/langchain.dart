@@ -5,8 +5,7 @@ import 'package:langchain/langchain.dart';
 import 'package:langchain_google/langchain_google.dart';
 
 final llmProvider = Provider((ref) {
-  final llm =
-      ChatGoogleGenerativeAI(apiKey: 'AIzaSyBzp2tpXUqnVRlr_UmZry3wUAsvN3344kM');
+  final llm = ChatGoogleGenerativeAI(apiKey: 'API_KEY_GOES_HERE');
 
   return llm;
 });

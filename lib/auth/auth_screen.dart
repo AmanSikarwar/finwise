@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:finwise/auth/auth_provider.dart';
 import 'package:finwise/auth/auth_state.dart';
+import 'package:finwise/langchain/chatbot_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -11,13 +12,15 @@ class AuthScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    log(ref.watch(authProvider).asData?.value.toString() ?? 'No data');
     final mobileNumberController = useTextEditingController();
     final otpController = useTextEditingController();
     final userIdController = useTextEditingController();
     final authState = ref.watch(authProvider);
-    ref.read(authProvider.notifier).checkAuth();
+    // ref.read(authProvider.notifier).checkAuth();
     if (authState.value == AuthState.authenticated) {
+      Navigator.of(context).push(MaterialPageRoute(
+        builder: (context) => const ChatBotScreen(),
+      ));
       return const Scaffold(
         body: Center(
           child: Text('Authenticated!}'),

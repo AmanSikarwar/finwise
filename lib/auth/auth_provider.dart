@@ -33,7 +33,7 @@ class AuthNotifier extends AsyncNotifier<AuthState> {
   void loginWithOTP(String userId, String otp) async {
     try {
       final account = ref.read(accountProvider);
-      await account.updatePhoneVerification(
+      await account.updatePhoneSession(
         userId: userId,
         secret: otp,
       );

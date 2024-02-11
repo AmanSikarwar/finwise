@@ -1,8 +1,20 @@
 import 'dart:async';
 
+import 'package:finwise/langchain/message_provider.dart';
+import 'package:finwise/models/message.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:langchain/langchain.dart';
 import 'package:langchain_google/langchain_google.dart';
+
+String extractContent(String message) {
+  final pattern = RegExp(r'content: (.*),');
+  final match = pattern.firstMatch(message);
+  if (match != null) {
+    return match.group(1)!;
+  } else {
+    return '';
+  }
+}
 
 final llmProvider = Provider((ref) {
   final llm =
@@ -19,11 +31,26 @@ class ConversationNotifier extends AsyncNotifier<String> {
   }
 
   Future<void> run(String value) async {
+    final messagesProvider = ref.read(messagesNotifierProvider.notifier);
+    final userMessage = Message(
+      id: DateTime.now().toIso8601String(),
+      content: value,
+      type: MessageType.user,
+    );
+    await messagesProvider.addMessage(userMessage);
     state = AsyncData('${state.value!}\n$value');
     final conversation = ref.watch(conversationProvider);
     final output = await conversation.call(value, returnOnlyOutputs: true);
-    final message = output.toString();
-    state = AsyncData('${state.value!}\n$message');
+    final message = output["response"] as AIChatMessage?;
+    if (message != null) {
+      final botMessage = Message(
+        id: DateTime.now().toIso8601String(),
+        content: message.content,
+        type: MessageType.bot,
+      );
+      await messagesProvider.addMessage(botMessage);
+      state = AsyncData('${state.value!}\n${message.content}');
+    }
   }
 }
 
@@ -51,7 +78,7 @@ final conversationProvider = Provider((ref) {
 
     You have to understand the client's financial situation and provide the best financial advice to the client.
 
-    If you need any information from the client, you can ask the client for the information.
+    If you need any information from the client, you can ask the client for the information (one by one).
 
     You have to ask and respond to the client in client's preferred language.
 

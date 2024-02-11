@@ -5,11 +5,11 @@ class UserInfoPage extends StatefulWidget {
   const UserInfoPage({super.key});
   @override
   State<UserInfoPage> createState() {
-    return _GoalsScreenState();
+    return _UserInfoPageState();
     }
 }
 
-class _GoalsScreenState extends State<UserInfoPage> {
+class _UserInfoPageState extends State<UserInfoPage> {
   TextEditingController incomeController = TextEditingController();
   TextEditingController landAreaController = TextEditingController();
   TextEditingController farmingController = TextEditingController();
